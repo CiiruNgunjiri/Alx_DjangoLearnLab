@@ -3,7 +3,7 @@ from bookshelf.models import Book
 
 # Retrieve all books and display their attributes
 
-books = Book.objects.all()
+book = Book.objects.get(title="1984")  # Get the book instance
 print(book.title, book.author, book.publication_year)
 
 # Expected Output:
