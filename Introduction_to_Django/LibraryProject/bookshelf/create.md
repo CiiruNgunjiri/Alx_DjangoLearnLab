@@ -15,4 +15,3 @@ from bookshelf.models import Book
 
 # Expected Output:
 '''New book instance created successfully'''
-# New book instance created successfully.
