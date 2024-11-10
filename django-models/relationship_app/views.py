@@ -61,7 +61,12 @@ class UserLogoutView(LogoutView):
 
 # Function to check if user is admin
 def is_admin(user):
-    return user.profile.role == 'Admin'
+    """Check if the user has the 'Admin' role."""
+    return user.is_authenticated and user.profile.role == 'Admin'
+
+# Custom decorator to check for Admin role
+admin_required = user_passes_test(is_admin, login_url='/login/')  # Redirect to login if not admin
+
 
 # Admin view
 @user_passes_test(is_admin)
