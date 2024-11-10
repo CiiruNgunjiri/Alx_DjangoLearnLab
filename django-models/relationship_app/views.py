@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import permission_required
 from django.views.generic.detail import DetailView
 from .models import Book
 from .models import Library, UserProfile
+from django.contrib import messages
 
 def library_detail(request, library_id):
     # Fetch the library object based on the provided ID
@@ -119,4 +120,14 @@ def delete_book(request, book_id):
         return redirect('list_books')  # Redirect to the list of books after deletion
     return render(request, 'delete_book.html', {'book': book})
 
-
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account created successfully! You can now log in.')
+            return redirect('login')  # Redirect to your login page
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'relationship_app/register.html', {'form': form})
