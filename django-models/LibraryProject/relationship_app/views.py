@@ -8,6 +8,16 @@ from django.contrib.auth.decorators import user_passes_test, permission_required
 from .models import Book, Library, UserProfile
 
 
+def library_view(request):
+    return render(request, 'library.html')  # Make sure you have this template
+
+def librarian_view(request):
+    return render(request, 'librarian.html')  # Make sure you have this template
+
+def member_view(request):
+    return render(request, 'member.html')  # Make sure you have this template
+
+
 def list_books(request):
     books = Book.objects.all()  # Retrieve all books from the database
     return render(request, 'list_books.html', {'books': books})  # Render the template with book data
