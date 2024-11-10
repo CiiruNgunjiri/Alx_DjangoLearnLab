@@ -30,7 +30,7 @@ def list_books(request):
 
 class LibraryDetailView(DetailView):
     model = Library
-    template_name = 'library_detail.html'  # Specify the template to use
+    template_name = 'relationship_app/library_detail.html'  # Specify the template to use
     context_object_name = 'library'  # Name of the context variable to be used in the template
 
     def get_queryset(self):
@@ -65,7 +65,7 @@ def is_admin(user):
 # Admin view
 @user_passes_test(is_admin)
 def admin_view(request):
-    return render(request, 'admin_view.html')
+    return render(request, 'relationship_app/admin.html') 
 
 # Function to check if user is librarian
 def is_librarian(user):
