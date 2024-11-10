@@ -65,13 +65,14 @@ def is_admin(user):
     """Check if the user has the 'Admin' role."""
     return user.is_authenticated and user.profile.role == 'Admin'
 
+# Custom decorator to check for Admin role
+admin_required = user_passes_test(is_admin, login_url='/login/')  # Redirect to login if not admin
+
+
 # Admin view
 @user_passes_test(is_admin)
 def admin_view(request):
     return render(request, 'relationship_app/admin.html') 
-
-# Custom decorator to check for Admin role
-admin_required = user_passes_test(is_admin, login_url='/login/')  # Redirect to login if not admin
 
 
 # Function to check if user is librarian
