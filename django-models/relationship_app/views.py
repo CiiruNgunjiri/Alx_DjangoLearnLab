@@ -5,7 +5,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import user_passes_test, permission_required
-from .models import Book, Library, UserProfile
+from .models import Book
+from .models import Library, UserProfile
 
 def library_detail(request, library_id):
     # Fetch the library object based on the provided ID
