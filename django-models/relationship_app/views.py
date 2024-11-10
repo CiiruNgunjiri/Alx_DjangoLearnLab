@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DetailView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
@@ -7,15 +7,19 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import user_passes_test, permission_required
 from .models import Book, Library, UserProfile
 
+def library_detail(request, library_id):
+    # Fetch the library object based on the provided ID
+    library = get_object_or_404(Library, id=library_id)
+    return render(request, 'relationship_app/library_detail.html', {'library': library})
 
 def library_view(request):
-    return render(request, 'library.html')  # Make sure you have this template
+    return render(request, 'library.html')  
 
 def librarian_view(request):
-    return render(request, 'librarian.html')  # Make sure you have this template
+    return render(request, 'librarian.html')  
 
 def member_view(request):
-    return render(request, 'member.html')  # Make sure you have this template
+    return render(request, 'member.html')  
 
 
 def list_books(request):
@@ -106,3 +110,5 @@ def delete_book(request, book_id):
         book.delete()
         return redirect('list_books')  # Redirect to the list of books after deletion
     return render(request, 'delete_book.html', {'book': book})
+
+
