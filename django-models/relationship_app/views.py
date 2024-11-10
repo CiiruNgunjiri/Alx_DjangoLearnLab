@@ -19,8 +19,8 @@ def member_view(request):
 
 
 def list_books(request):
-    books = Book.objects.all()  # Retrieve all books from the database
-    return render(request, 'list_books.html', {'books': books})  # Render the template with book data
+    books = Book.objects.all()  # Fetch all books from the database
+    return render(request, 'relationship_app/list_books.html', {'books': books})
 
 class LibraryDetailView(DetailView):
     model = Library
