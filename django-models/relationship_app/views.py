@@ -80,7 +80,7 @@ def is_librarian(user):
 # Librarian view
 @user_passes_test(is_librarian)
 def librarian_view(request):
-    return render(request, 'librarian_view.html')
+    return render(request, 'relationship_app/librarian_view.html')
 
 # Function to check if user is member
 def is_member(user):
@@ -89,7 +89,7 @@ def is_member(user):
 # Member view
 @user_passes_test(is_member)
 def member_view(request):
-    return render(request, 'member_view.html')
+    return render(request, 'relationship_app/member_view.html')
 
 
 @permission_required('relationship_app.can_add_book', raise_exception=True)
