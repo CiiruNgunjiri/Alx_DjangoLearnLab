@@ -1,6 +1,6 @@
 # Create your models here.
 # accounts/models.py
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext as _
@@ -24,6 +24,20 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)  # Optional field for date of birth
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)  # Optional field for profile photo
+     
+    # Override groups field
+    groups = models.ManyToManyField(
+        Group,
+        related_name='custom_user_accounts',  # Unique related name for accounts app
+        blank=True,
+    )
+
+    # Override user_permissions field
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name='custom_user_accounts_permissions',  # Unique related name for accounts app
+        blank=True,
+    )
     
     objects = CustomUserManager()
     
