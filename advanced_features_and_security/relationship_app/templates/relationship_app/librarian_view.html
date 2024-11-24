@@ -1,0 +1,26 @@
+<!-- librarian_view.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librarian View</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}"> <!-- Optional: Include your CSS -->
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Librarian Dashboard</h1>
+    </header>
+    <main>
+        <p>This page is accessible only to librarians. Here you can manage library resources and assist members.</p>
+        <ul>
+            <li><a href="/manage-books/">Manage Books</a></li>
+            <li><a href="/view-members/">View Members</a></li>
+            <li><a href="/logout/">Logout</a></li>
+        </ul>
+    </main>
+    <footer>
+        <p>&copy; 2024 Your Library Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>
