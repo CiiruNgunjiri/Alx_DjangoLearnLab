@@ -25,4 +25,5 @@ urlpatterns = [
     path('librarian/', librarian_view, name='librarian-view'),  # Librarian view URL
     path('member/', member_view, name='member-view'),      # Member view URL
     path('register/', register, name='register'),  # URL for user registration
+    path('views.register'),
 ]
