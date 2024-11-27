@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DetailView, CreateView
 from django.urls import reverse_lazy
-from django.contrib.auth import login, logout
+from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import user_passes_test 
 from django.contrib.auth.decorators import permission_required
 from django.views.generic.detail import DetailView
 from .models import Book
-from .models import Library, UserProfile
+from .models import Library
 from django.contrib import messages
 
 def library_detail(request, library_id):

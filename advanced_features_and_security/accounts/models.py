@@ -24,6 +24,8 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)  # Optional field for date of birth
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)  # Optional field for profile photo
+
+    objects = CustomUserManager()
      
     # Override groups field
     groups = models.ManyToManyField(
@@ -38,11 +40,9 @@ class CustomUser(AbstractUser):
         related_name='custom_user_accounts_permissions',  # Unique related name for accounts app
         blank=True,
     )
-    
-    objects = CustomUserManager()
-    
+     
     def __str__(self):
-        return self.username  # Return username for representation
+        return self.username # Return username for representation
  
 
 class SomeModel(models.Model):
