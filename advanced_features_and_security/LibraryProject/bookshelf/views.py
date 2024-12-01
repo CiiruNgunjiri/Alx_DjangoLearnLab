@@ -7,6 +7,10 @@ from .forms import ExampleForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import UpdateView
 
+
+def home(request):
+    return render(request, 'login.html')
+ 
 def book_list(request):
     books = Book.objects.all()  # Get all books from the database
     return render(request, 'book_list.html', {'books': books})
@@ -101,3 +105,4 @@ def example_view(request):
         form = ExampleForm()  # Create an empty form instance for GET request
 
     return render(request, 'example_form.html', {'form': form})
+

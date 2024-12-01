@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-b#ld=ck^7%s$d@1%^%#idt#rfmb0zqwgf&k(=q)qczw*yl4hfu
 # DEBUG should be set to False in production for security reasons.
 DEBUG = True
 
-ALLOWED_HOSTS = []  #Add your domain or trusted hosts
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'yourdomain.com', 'www.yourdomain.com']  #Add your domain or trusted hosts
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'bookshelf',
     'relationship_app',
     'accounts',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,16 @@ SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'", "https://trustedscripts.example.com")
 CSP_STYLE_SRC = ("'self'", "https://trusted.cdn.com")
+
+
+# Redirect all non-HTTPS requests to HTTPS
+SECURE_SSL_REDIRECT = False
+
+# Enable HTTP Strict Transport Security (HSTS) for one year
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+
+# Include all subdomains in the HSTS policy
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# Allow preloading of HSTS
+SECURE_HSTS_PRELOAD = True

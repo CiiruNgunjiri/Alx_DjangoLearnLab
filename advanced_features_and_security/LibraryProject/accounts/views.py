@@ -4,7 +4,7 @@ from django.contrib.auth import login as auth_login
 from bookshelf.forms import BookForm
 from bookshelf.forms import ExampleForm
 
- # Ensure this imports correctly
+
 
 def register(request):
     if request.method == 'POST':
@@ -28,3 +28,8 @@ def example_view(request):
         form = ExampleForm()  # Create an empty form instance
 
     return render(request, 'bookshelf/example_template.html', {'form': form})
+
+
+ # Ensure this imports correctly
+def home(request):
+    return render(request, 'login.html')  # Replace with your template
