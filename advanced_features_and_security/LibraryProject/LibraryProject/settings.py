@@ -154,7 +154,7 @@ CSP_STYLE_SRC = ("'self'", "https://trusted.cdn.com")
 
 
 # Redirect all non-HTTPS requests to HTTPS
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 # Enable HTTP Strict Transport Security (HSTS) for one year
 SECURE_HSTS_SECONDS = 31536000  # 1 year
