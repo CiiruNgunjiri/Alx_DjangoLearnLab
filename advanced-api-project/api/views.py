@@ -9,7 +9,7 @@ from django.views import View
 from django.shortcuts import get_object_or_404
 import json
 from rest_framework.views import APIView
-import filters
+import filters.OrderingFilter
 
 class BookFilter(filters.FilterSet):
     title = filters.CharFilter(lookup_expr='icontains')
