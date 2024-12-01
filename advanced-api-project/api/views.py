@@ -12,7 +12,8 @@ class BookListView(generics.ListCreateAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-
+    permission_classes = [IsAuthenticatedOrReadOnly] #allow read-only access for unauthenticated users
+  
     def perform_create(self, serializer):
         # Custom logic before saving a new book
         serializer.save()
