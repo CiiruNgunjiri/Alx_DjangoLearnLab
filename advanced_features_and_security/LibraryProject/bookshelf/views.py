@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .models import Book  # Import the Book model
 from django.db.models import Q
 from .forms import BookForm
+from .forms import ExampleForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import UpdateView
 
@@ -86,3 +87,17 @@ def search_books(request):
         books = Book.objects.all()
     return render(request, 'bookshelf/book_list.html', {'books': books})
 
+def example_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Process the data from the form
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            # Handle the data (e.g., save to database, send email, etc.)
+            return render(request, 'success.html', {'name': name})
+    else:
+        form = ExampleForm()  # Create an empty form instance for GET request
+
+    return render(request, 'example_form.html', {'form': form})
