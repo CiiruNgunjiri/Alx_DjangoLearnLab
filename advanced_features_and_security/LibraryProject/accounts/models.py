@@ -11,9 +11,20 @@ from django.dispatch import receiver
 # Define user types using TextChoices for better readability and maintainability
 class UserTypes(models.TextChoices):
     ADMIN = "ADMIN", _("Admin")
-    OWNER = "OWNER", _("Owner")
-    EMPLOYEE = "EMPLOYEE", _("Employee")
-    CUSTOMER = "CUSTOMER", _("Customer")
+    LIBRARIAN = "LIBRARIAN", _("Librarian")
+    MEMBER = "MEMBER", _("Member")
+
+class User(AbstractUser):
+    date_of_birth = models.DateField(null=True, blank=True)  # Optional field for date of birth
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)  # Optional field for profile photo
+    email = models.EmailField(unique=True, max_length=50)  # Ensure email is unique
+    type = models.CharField(
+        max_length=20,
+        choices=UserTypes.choices,
+        default=UserTypes.MEMBER  # Default user type
+    ) 
+    def __str__(self):
+        return self.username
 
 # Profile model for additional user information
 class OwnerProfile(models.Model):
@@ -28,7 +39,7 @@ class OwnerProfile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        if instance.type == UserTypes.OWNER:
+        if instance.type == UserTypes.ADMIN:
             OwnerProfile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
@@ -60,7 +71,7 @@ class CustomUser(AbstractUser):
     type = models.CharField(
         max_length=20,
         choices=UserTypes.choices,
-        default=UserTypes.CUSTOMER  # Default user type
+        default=UserTypes.MEMBER # Default user type
     ) 
     # Override groups field
     groups = models.ManyToManyField(
@@ -82,18 +93,6 @@ class CustomUser(AbstractUser):
         return self.username  # Return username for representation
  
 
+    
 class SomeModel(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='account_some_models')
-
-
-class User(AbstractUser):
-    date_of_birth = models.DateField(null=True, blank=True)  # Optional field for date of birth
-    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)  # Optional field for profile photo
-    email = models.EmailField(unique=True, max_length=50)  # Ensure email is unique
-    type = models.CharField(
-        max_length=20,
-        choices=UserTypes.choices,
-        default=UserTypes.CUSTOMER  # Default user type
-    ) 
-    def __str__(self):
-        return self.username

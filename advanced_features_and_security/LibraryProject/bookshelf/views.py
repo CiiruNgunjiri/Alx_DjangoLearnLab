@@ -3,14 +3,22 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .models import Book  # Import the Book model
 from django.db.models import Q
 from .forms import BookForm
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic import UpdateView
 
 def book_list(request):
     books = Book.objects.all()  # Get all books from the database
     return render(request, 'book_list.html', {'books': books})
 
+class book_list(PermissionRequiredMixin, UpdateView):
+    model = Book
+    permission_required = 'bookshelf.can_edit'
+    template_name = 'bookshelf/book_list.html'    
+    context_object_name = 'books'
+
 # View to add a new book
 @login_required  # Ensure the user is logged in
-@permission_required('app.can_create', raise_exception=True)  # Check if the user has permission to create books
+@permission_required('bookshelf.can_create', raise_exception=True)  # Check if the user has permission to create books
 def add_book(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -33,7 +41,7 @@ def add_book(request):
 
 # View to edit an existing book
 @login_required
-@permission_required('app.can_edit', raise_exception=True)  # Check if the user has permission to edit books
+@permission_required('bookshelf.can_edit', raise_exception=True)  # Check if the user has permission to edit books
 def edit_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     
@@ -53,7 +61,7 @@ def edit_book(request, book_id):
 
 # View to delete a book
 @login_required
-@permission_required('app.can_delete', raise_exception=True)  # Check if the user has permission to delete books
+@permission_required('bookshelf.can_delete', raise_exception=True)  # Check if the user has permission to delete books
 def delete_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     

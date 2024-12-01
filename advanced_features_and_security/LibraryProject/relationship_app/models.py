@@ -6,13 +6,12 @@ from django.conf import settings
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
-
+    
     class Meta:
         permissions = [
-            ("can_view", "Can view book"),
-            ("can_create", "Can create book"),
-            ("can_delete", "Can delete book"),
-            ("can_edit", "Can edit book"),
+            ("can_add_book", "Can add book"),
+            ("can_change_book", "Can change book"),
+            ("can_delete_book", "Can delete book"),        
         ]
 
     def __str__(self):
@@ -22,16 +21,6 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
 
-    class Meta:
-        permissions = [
-            ("can_add_book", "Can add book"),
-            ("can_change_book", "Can change book"),
-            ("can_delete_book", "Can delete book"),
-            ("can_view", "Can view book"),
-            ("can_create", "Can create book"),
-            ("can_delete", "Can delete book"),
-            ("can_edit", "Can edit book"),
-        ]
     def __str__(self):
         return self.title
 
