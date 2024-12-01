@@ -1,9 +1,40 @@
 # Create your models here.
 # accounts/models.py
-from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission, User
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+# Define user types using TextChoices for better readability and maintainability
+class UserTypes(models.TextChoices):
+    ADMIN = "ADMIN", _("Admin")
+    OWNER = "OWNER", _("Owner")
+    EMPLOYEE = "EMPLOYEE", _("Employee")
+    CUSTOMER = "CUSTOMER", _("Customer")
+
+# Profile model for additional user information
+class OwnerProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Link to CustomUser model
+    company_name = models.CharField(max_length=50, default='Default Company')
+    company_description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
+# Signal to create a profile automatically when a User is created
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        if instance.type == UserTypes.OWNER:
+            OwnerProfile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.ownerprofile.save()  # Save the profile when the user is saved
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -21,10 +52,16 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+# Custom User model extending AbstractUser
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)  # Optional field for date of birth
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)  # Optional field for profile photo
-     
+    email = models.EmailField(unique=True, max_length=50)  # Ensure email is unique
+    type = models.CharField(
+        max_length=20,
+        choices=UserTypes.choices,
+        default=UserTypes.CUSTOMER  # Default user type
+    ) 
     # Override groups field
     groups = models.ManyToManyField(
         Group,
@@ -48,3 +85,15 @@ class CustomUser(AbstractUser):
 class SomeModel(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='account_some_models')
 
+
+class User(AbstractUser):
+    date_of_birth = models.DateField(null=True, blank=True)  # Optional field for date of birth
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)  # Optional field for profile photo
+    email = models.EmailField(unique=True, max_length=50)  # Ensure email is unique
+    type = models.CharField(
+        max_length=20,
+        choices=UserTypes.choices,
+        default=UserTypes.CUSTOMER  # Default user type
+    ) 
+    def __str__(self):
+        return self.username

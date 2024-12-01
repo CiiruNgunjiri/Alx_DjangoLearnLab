@@ -11,6 +11,18 @@ from .models import Book
 from .models import Library
 from django.contrib import messages
 
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account created successfully! You can now log in.')
+            return redirect('login')  # Redirect to your login page
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'relationship_app/register.html', {'form': form})
+
 def library_detail(request, library_id):
     # Fetch the library object based on the provided ID
     library = get_object_or_404(Library, id=library_id)
@@ -121,14 +133,3 @@ def delete_book(request, book_id):
         return redirect('list_books')  # Redirect to the list of books after deletion
     return render(request, 'delete_book.html', {'book': book})
 
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Account created successfully! You can now log in.')
-            return redirect('login')  # Redirect to your login page
-    else:
-        form = UserCreationForm()
-    
-    return render(request, 'relationship_app/register.html', {'form': form})

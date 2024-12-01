@@ -1,9 +1,11 @@
 from django.urls import path
+from . import views
 from .views import list_books, LibraryDetailView, RegisterView, UserLoginView, UserLogoutView
 from .views import admin_view, librarian_view, member_view, add_book, edit_book, delete_book, library_detail
 from .views import register
 
 urlpatterns = [
+    path('register/', views.register, name='register'),  # Correctly specify the view
     path('books/', list_books, name='list_books'),
     path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),
     path('register/', RegisterView.as_view(), name='register'),  # Registration URL using class-based view
@@ -25,5 +27,5 @@ urlpatterns = [
     path('librarian/', librarian_view, name='librarian-view'),  # Librarian view URL
     path('member/', member_view, name='member-view'),      # Member view URL
     path('register/', register, name='register'),  # URL for user registration
-    path('views.register'),
+    
 ]

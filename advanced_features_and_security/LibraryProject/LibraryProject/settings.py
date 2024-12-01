@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-b#ld=ck^7%s$d@1%^%#idt#rfmb0zqwgf&k(=q)qczw*yl4hfu'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# DEBUG should be set to False in production for security reasons.
+DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []  #Add your domain or trusted hosts
 
 
 # Application definition
@@ -126,8 +127,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'bookshelf.CustomUser'
-
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 # Additional Security settings
@@ -137,10 +137,16 @@ AUTH_USER_MODEL = 'bookshelf.CustomUser'
 # - X_FRAME_OPTIONS is set to 'DENY' to prevent clickjacking attacks.
 # - Cookies are marked as secure to ensure they are transmitted over HTTPS only.
 
+#security settings
 SECURE_BROWSER_XSS_FILTER = True  # Enables the browser's XSS filter
 X_FRAME_OPTIONS = 'DENY'  # Prevents clickjacking
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents browsers from MIME-sniffing
+
+#Use HTTPS cookies only
 CSRF_COOKIE_SECURE = True  # Ensures CSRF cookies are only sent over HTTPS
 SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS
+
+#Configure CSP
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'", "https://trustedscripts.example.com")
+CSP_STYLE_SRC = ("'self'", "https://trusted.cdn.com")
