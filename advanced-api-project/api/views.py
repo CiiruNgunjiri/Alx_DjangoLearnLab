@@ -9,43 +9,7 @@ from django.views import View
 from django.shortcuts import get_object_or_404
 import json
 from rest_framework.views import APIView
-
-class BookCreateView(View):
-    """
-    View to create a new book.
-    """
-    def post(self, request):
-        data = json.loads(request.body)
-        book_name = data.get('book_name')
-        
-        if book_name:
-            book = Book.objects.create(book_name=book_name)
-            return JsonResponse({'id': book.id, 'book_name': book.book_name}, status=201)
-        return JsonResponse({'error': 'Book name is required.'}, status=400)
-
-class BookUpdateView(View):
-    """
-    View to update an existing book.
-    """
-    def put(self, request, book_id):
-        book = get_object_or_404(Book, id=book_id)
-        data = json.loads(request.body)
-        book_name = data.get('book_name')
-
-        if book_name:
-            book.book_name = book_name
-            book.save()
-            return JsonResponse({'id': book.id, 'book_name': book.book_name}, status=200)
-        return JsonResponse({'error': 'Book name is required.'}, status=400)
-
-class BookDeleteView(View):
-    """
-    View to delete a specific book by ID.
-    """
-    def delete(self, request, book_id):
-        book = get_object_or_404(Book, id=book_id)
-        book.delete()
-        return JsonResponse({'message': 'Book deleted successfully.'}, status=204)
+import filters
 
 class BookFilter(filters.FilterSet):
     title = filters.CharFilter(lookup_expr='icontains')
@@ -87,4 +51,41 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated] #Restrict access to authenticated users only
+
+class BookCreateView(View):
+    """
+    View to create a new book.
+    """
+    def post(self, request):
+        data = json.loads(request.body)
+        book_name = data.get('book_name')
+        
+        if book_name:
+            book = Book.objects.create(book_name=book_name)
+            return JsonResponse({'id': book.id, 'book_name': book.book_name}, status=201)
+        return JsonResponse({'error': 'Book name is required.'}, status=400)
+
+class BookUpdateView(View):
+    """
+    View to update an existing book.
+    """
+    def put(self, request, book_id):
+        book = get_object_or_404(Book, id=book_id)
+        data = json.loads(request.body)
+        book_name = data.get('book_name')
+
+        if book_name:
+            book.book_name = book_name
+            book.save()
+            return JsonResponse({'id': book.id, 'book_name': book.book_name}, status=200)
+        return JsonResponse({'error': 'Book name is required.'}, status=400)
+
+class BookDeleteView(View):
+    """
+    View to delete a specific book by ID.
+    """
+    def delete(self, request, book_id):
+        book = get_object_or_404(Book, id=book_id)
+        book.delete()
+        return JsonResponse({'message': 'Book deleted successfully.'}, status=204)
 
