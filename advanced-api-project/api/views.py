@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
+from django_filters import rest_framework as filters
 from .models import Book
 from .serializers import BookSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -46,16 +47,32 @@ class BookDeleteView(View):
         book.delete()
         return JsonResponse({'message': 'Book deleted successfully.'}, status=204)
 
+class BookFilter(filters.FilterSet):
+    title = filters.CharFilter(lookup_expr='icontains')
+    author = filters.CharFilter(field_name='author__name', lookup_expr='icontains')  # Assuming a related author model
+    publication_year = filters.NumberFilter()
+
+    class Meta:
+        model = Book
+        fields = ['title', 'author', 'publication_year']
+
 class BookListView(generics.ListCreateAPIView):
     """
     View to list all books and create a new book.
     - GET /books/ : Returns a list of all books.
     - POST /books/ : Creates a new book.
     """
+    
+
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly] #allow read-only access for unauthenticated users
-  
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = BookFilter
+    search_fields = ['title', 'author__name']  # Assuming a related author model
+    ordering_fields = ['title', 'publication_year']  # Allow ordering by title and publication year
+    ordering = ['title']  # Default ordering
+
     def perform_create(self, serializer):
         # Custom logic before saving a new book
         serializer.save()
