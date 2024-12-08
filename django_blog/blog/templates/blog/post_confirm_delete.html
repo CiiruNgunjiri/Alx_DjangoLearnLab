@@ -1,0 +1,57 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Deletion</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Confirm Deletion</h1>
+        <p>Are you sure you want to delete the following item?</p>
+
+        <div class="item-details">
+            <strong>Item:</strong> {{ object.name }}<br>
+            <strong>Description:</strong> {{ object.description }}<br>
+            <strong>Created on:</strong> {{ object.created_at|date:"F j, Y" }}<br>
+        </div>
+
+        <form method="POST" action="{% url 'your_app:object_delete' object.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'your_app:object_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .item-details {
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-danger {
+            background-color: #d9534f;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #5bc0de;
+            color: white;
+        }
+    </style>
+</body>
+</html>

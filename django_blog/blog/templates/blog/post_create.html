@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Post</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <div class="container">
+        <h1>Create a New Post</h1>
+        <form action="/submit_post" method="POST">
+            <div class="form-group">
+                <label for="title">Post Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="content">Content:</label>
+                <textarea id="content" name="content" rows="10" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags (comma-separated):</label>
+                <input type="text" id="tags" name="tags">
+            </div>
+
+            <button type="submit">Submit Post</button>
+        </form>
+        <a href="/posts">Back to Posts</a> <!-- Link to view all posts -->
+    </div>
+
+    <script src="script.js"></script> <!-- Link to your JavaScript file -->
+</body>
+</html>

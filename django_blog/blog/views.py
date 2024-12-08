@@ -6,6 +6,11 @@ from django.contrib import messages
 from django import forms
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Post
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.utils import timezone
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -54,3 +59,63 @@ def profile_view(request):
 
 def home_view(request):
     return render(request, 'blog/base.html')  # Ensure you have a home.html template
+
+
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+
+class PostCreateView(CreateView):
+    model = Post
+    template_name = 'blog/post_form.html'
+    fields = ['title', 'content']
+    
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    template_name = 'blog/post_form.html'
+    fields = ['title', 'content']
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author
+
+class PostDeleteView(DeleteView):
+    model = Post
+    template_name = 'blog/post_confirm_delete.html'
+    success_url = reverse_lazy('post-list')
+
+class PostEditView(UpdateView):
+    model = Post
+    template_name = 'blog/post_edit.html'  # Adjust the template path as necessary
+    fields = ['title', 'content']  # Specify the fields you want to edit
+
+    def get_success_url(self):
+        return HttpResponseRedirect('post_list')  # Redirect after successful edit
+
+class BlogIndexView(ListView):
+    model = Post
+    template_name = 'blog/index.html'  # Adjust the template path as necessary
+    context_object_name = 'posts'
+
+    # blog/views.py
+
+def index(request):
+    context = {}
+    limit = 10  # Limit to the latest 10 posts
+
+    # Fetch posts, filtering out drafts for non-superusers
+    if request.user.is_superuser:
+        posts = Post.objects.all()[:limit]
+    else:
+        posts = Post.objects.filter(is_draft=False, published_date__lte=timezone.now())[:limit]
+
+    context['posts'] = posts
+    return render(request, 'blog/index.html', context)

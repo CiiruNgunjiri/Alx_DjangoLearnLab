@@ -1,0 +1,45 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Index</title>
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">  <!-- Link to your CSS file -->
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'post_list' %}">Posts</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+                <!-- Add more navigation links as needed -->
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Blog Posts</h2>
+        {% if posts %}
+            <ul>
+                {% for post in posts %}
+                    <li>
+                        <h3><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h3>  <!-- Link to post detail -->
+                        <p>{{ post.content|truncatewords:30 }}</p>  <!-- Show a preview of the content -->
+                        <p><em>Posted by {{ post.author }} on {{ post.created_at }}</em></p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No posts available.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Your Blog Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>
