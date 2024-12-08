@@ -19,4 +19,7 @@ urlpatterns = [
     path('', BlogIndexView.as_view(), name='blog_index'),
     path('post/create/', PostCreateView.as_view(), name='post_create'),  # URL for creating a post
     path('', views.index, name='blog/index'),
+     path("post/new/", views.post_create, name="post-create"),  # URL for creating a new post
+    path("post/<int:pk>/update/", views.post_update, name="post-update"),  # URL for updating a post
+    path("post/<int:pk>/delete/", views.post_delete, name="post-delete"),  # URL for deleting a post
 ]
