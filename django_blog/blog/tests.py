@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .models import Post
+from .models import Post, Comment
 import datetime
 
 class AuthTests(TestCase):
@@ -110,3 +110,57 @@ class BlogPostTests(TestCase):
         """Test that navigation links work correctly."""
         response = self.client.get(reverse('blog_index'))
         self.assertEqual(response.status_code, 200)
+
+class CommentCreationTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.post = Post.objects.create(title='Test Post', content='Test Content', author=self.user)
+
+    def test_create_comment(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.post(reverse('comment_new', kwargs={'post_id': self.post.id}), {'content': 'Great post!'})
+        self.assertEqual(response.status_code, 302)  # Check for redirect after successful creation
+        self.assertEqual(Comment.objects.count(), 1)
+        self.assertEqual(Comment.objects.get().content, 'Great post!')
+
+class CommentEditingTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.post = Post.objects.create(title='Test Post', content='Test Content', author=self.user)
+        self.comment = Comment.objects.create(post=self.post, author=self.user, content='Initial comment')
+
+    def test_edit_comment(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.post(reverse('comment_edit', kwargs={'pk': self.comment.id}), {'content': 'Edited comment'})
+        self.comment.refresh_from_db()  # Refresh the comment instance from the database
+        self.assertEqual(response.status_code, 302)  # Check for redirect after successful edit
+        self.assertEqual(self.comment.content, 'Edited comment')
+
+class CommentDeletionTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.post = Post.objects.create(title='Test Post', content='Test Content', author=self.user)
+        self.comment = Comment.objects.create(post=self.post, author=self.user, content='Comment to delete')
+
+    def test_delete_comment(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.post(reverse('comment_delete', kwargs={'pk': self.comment.id}))
+        self.assertEqual(response.status_code, 302)  # Check for redirect after successful deletion
+        self.assertEqual(Comment.objects.count(), 0)
+
+class CommentPermissionTests(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(username='user1', password='password1')
+        self.user2 = User.objects.create_user(username='user2', password='password2')
+        self.post = Post.objects.create(title='Test Post', content='Test Content', author=self.user1)
+        self.comment = Comment.objects.create(post=self.post, author=self.user1, content='User1 comment')
+
+    def test_non_author_cannot_edit_comment(self):
+        self.client.login(username='user2', password='password2')
+        response = self.client.get(reverse('comment_edit', kwargs={'pk': self.comment.id}))
+        self.assertEqual(response.status_code, 403)  # Forbidden access
+
+    def test_non_author_cannot_delete_comment(self):
+        self.client.login(username='user2', password='password2')
+        response = self.client.post(reverse('comment_delete', kwargs={'pk': self.comment.id}))
+        self.assertEqual(response.status_code, 403)  # Forbidden access
