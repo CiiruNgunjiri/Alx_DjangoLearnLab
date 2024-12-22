@@ -1,5 +1,6 @@
 from django import forms
 from .models import Post, Comment
+from taggit.models import Tag
 
 class PostForm(forms.ModelForm):
     class Meta:

@@ -1,0 +1,7 @@
+<select multiple name="{{ widget.name }}" class="{{ widget.attrs.class }}">
+    {% for option in widget.choices %}
+        <option value="{{ option.value }}" {% if option.value in widget.value %}selected{% endif %}>
+            {{ option.label }}
+        </option>
+    {% endfor %}
+</select>
