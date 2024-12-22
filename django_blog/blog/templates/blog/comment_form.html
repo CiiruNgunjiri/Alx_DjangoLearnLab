@@ -4,3 +4,7 @@
     <button type="submit">Submit</button>
   </form>
   
+  <form method="GET" action="{% url 'search_posts' %}">
+    <input type="text" name="q" placeholder="Search..." required>
+    <button type="submit">Search</button>
+</form>

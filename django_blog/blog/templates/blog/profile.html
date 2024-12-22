@@ -4,3 +4,8 @@
     <input type="email" name="email" value="{{ user.email }}" required><br>
     <button type="submit">Update Profile</button>
 </form>
+
+<form method="GET" action="{% url 'search_posts' %}">
+    <input type="text" name="q" placeholder="Search..." required>
+    <button type="submit">Search</button>
+</form>
