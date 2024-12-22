@@ -105,7 +105,9 @@ class BlogIndexView(ListView):
     template_name = 'blog/index.html'  # Adjust the template path as necessary
     context_object_name = 'posts'
 
-    # blog/views.py
+def post_create(request):
+    # Your logic for creating a post goes here
+    return render(request, 'blog/post_create.html')
 
 def index(request):
     context = {}
