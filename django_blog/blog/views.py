@@ -123,7 +123,7 @@ def index(request):
     context['posts'] = posts
     return render(request, 'blog/index.html', context)
 
-class CommentCreate(LoginRequiredMixin, CreateView):
+class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
     template_name = 'blog/comment_form.html'
@@ -133,7 +133,7 @@ class CommentCreate(LoginRequiredMixin, CreateView):
         form.instance.post = get_object_or_404(Post, pk=self.kwargs['post_id'])
         return super().form_valid(form)
 
-class CommentUpdate(LoginRequiredMixin, UpdateView):
+class CommentUpdateView(LoginRequiredMixin, UpdateView):
     model = Comment
     form_class = CommentForm
     template_name = 'blog/comment_form.html'
@@ -141,7 +141,7 @@ class CommentUpdate(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return self.model.objects.filter(author=self.request.user)
 
-class CommentDelete(LoginRequiredMixin, DeleteView):
+class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = 'blog/comment_confirm_delete.html'
 
