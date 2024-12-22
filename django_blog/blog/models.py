@@ -16,7 +16,7 @@ class Comment(models.Model):
     author = models.CharField(User, max_length=255)
     content = models.TextField()
     email = models.EmailField()
-    published_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
