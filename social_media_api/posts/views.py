@@ -55,8 +55,11 @@ class LikePostView(generics.GenericAPIView):
             return Response({"message": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create a like entry
-        like = Like.objects.create(user=request.user, post=post)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
 
+        if not created:
+            return Response({"message": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+        
         # Create a notification for the post author
         Notification.objects.create(
             recipient=post.author,
