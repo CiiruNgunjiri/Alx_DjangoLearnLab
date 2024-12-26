@@ -1,14 +1,22 @@
 from django.shortcuts import render, redirect
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from django.views import View
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from .models import CustomUser
+
+class UserListView(generics.ListAPIView):
+    queryset = CustomUser.objects.all()  # This line retrieves all users
+    serializer_class = UserSerializer  # Make sure you have a UserSerializer defined
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 class FollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -25,6 +33,18 @@ class UnfollowUserView(generics.GenericAPIView):
         user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
         request.user.following.remove(user_to_unfollow)
         return Response({"message": f"You have unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
+class ListFollowersView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.followers.all()  # List all followers of the current user
+
+class ListFollowingView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.following.all()  # List all users that the current user follows
+
 
 # API Views
 

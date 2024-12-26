@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import RegisterView, LoginView, ProfileView, RegisterAPIView, LoginAPIView
-from .views import FollowUserView, UnfollowUserView
+from .views import RegisterView, LoginView, ProfileView, RegisterAPIView, LoginAPIView, ListFollowersView, ListFollowingView
+from .views import FollowUserView, UnfollowUserView, UserListView
 
 urlpatterns = [
     # HTML views
@@ -14,4 +14,7 @@ urlpatterns = [
 
     path('follow/<int:user_id>/', FollowUserView.as_view(), name='follow_user'),
     path('unfollow/<int:user_id>/', UnfollowUserView.as_view(), name='unfollow_user'),
+    path('followers/', ListFollowersView.as_view(), name='list_followers'),  # New endpoint to list followers
+    path('following/', ListFollowingView.as_view(), name='list_following'),  # New endpoint to list following users
+    path('users/', UserListView.as_view(), name='user_list'),  # New endpoint to list all users
 ]
