@@ -1,23 +1,25 @@
-Social Media API
-Overview
+ f
+### Social Media API
+
+### Overview
 The Social Media API is a Django-based RESTful API designed to handle user authentication and management for a social media platform. This API supports user registration, login, and profile management, along with integration for social media logins via Facebook and Google.
-Table of Contents
 
-    Technologies Used
-    Setup Process
-    User Registration and Authentication
-    User Model Overview
-    API Endpoints
-    Testing the API
-    License
+### Table of Contents
 
-Technologies Used
+    1. Technologies Used
+    2. Setup Process
+    3. User Registration and Authentication
+    4. User Model Overview
+    5. API Endpoints
+    6. Testing the API
+    7. License
+
+### Technologies Used
 
     Django: A high-level Python web framework for building web applications.
     Django REST Framework: A powerful toolkit for building Web APIs in Django.
     Django Authtoken: For token-based authentication.
     Postman: For testing API endpoints.
-    Facebook SDK & Google Sign-In: For social media authentication (if implemented).
 
 Setup Process
 Prerequisites
@@ -60,7 +62,7 @@ python manage.py runserver
 The API will be accessible at http://127.0.0.1:8000/.
 User Registration and Authentication
 User Registration
-To register a new user, send a POST request to /api/accounts/register/ with the following JSON payload:
+To register a new user via the HTML interface, navigate to /accounts/register/ and fill out the registration form. To register a new user via the API, send a POST request to /accounts/api/register/ with the following JSON payload:
 
 json
 {
@@ -69,9 +71,9 @@ json
     "password": "your_password"
 }
 
-Upon successful registration, a new user will be created in the database.
+Upon successful registration, a new user will be created in the database, and an authentication token will be generated.
 User Login
-To log in, send a POST request to /api/accounts/login/ with the following JSON payload:
+To log in via the HTML interface, navigate to /accounts/login/ and fill out the login form. To log in via the API, send a POST request to /accounts/api/login/ with the following JSON payload:
 
 json
 {
@@ -94,6 +96,8 @@ The custom user model CustomUser extends Django’s AbstractUser and includes ad
     bio: A short biography of the user (optional).
     profile_picture: URL to the user's profile picture (optional).
     followers: A ManyToMany field that allows users to follow each other.
+    phone_number: User's phone number (optional).
+    designation: User's designation or title (optional).
 
 Example User Model Code
 
@@ -105,28 +109,32 @@ class CustomUser(AbstractUser):
     bio = models.TextField(blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True)
     followers = models.ManyToManyField('self', symmetrical=False, related_name='following', blank=True)
+    phone_number = models.CharField(max_length=15, blank=True)  # Optional field
+    designation = models.CharField(max_length=100, blank=True)   # Optional field
+
+    class Meta:
+        verbose_name = 'Custom User'
+        verbose_name_plural = 'Custom Users'
+
+    def __str__(self):
+        return self.username  # or f"{self.username} ({self.designation})"
 
 API Endpoints
 Method	Endpoint	Description
-POST	/api/accounts/register/	Register a new user
-POST	/api/accounts/login/	Log in an existing user
-GET	/api/accounts/profile/	Retrieve user profile (requires auth)
+POST	/accounts/api/register/	Register a new user (API)
+POST	/accounts/api/login/	Log in an existing user (API)
+GET	/accounts/profile/	Retrieve user profile (HTML page)
+GET	/accounts/register/	Render registration form (HTML)
+GET	/accounts/login/	Render login form (HTML)
 Testing the API
 You can test the API endpoints using Postman or any other API testing tool. Make sure to set the appropriate headers for authentication when accessing protected routes.
 
     Register a User:
-        Use POST method on /api/accounts/register/.
+        Use POST method on /accounts/api/register/.
     Log In:
-        Use POST method on /api/accounts/login/.
+        Use POST method on /accounts/api/login/.
     Access Profile:
-        Use GET method on /api/accounts/profile/ with the Authorization header set.
+        Use GET method on /accounts/profile/ with appropriate authentication if required.
 
 License
 This project is licensed under the MIT License - see the LICENSE file for details. Feel free to modify this README file according to your project's specifics and add any additional information that may be relevant to users or developers interacting with your API.
-Related
-What are the key components to include in a README file for a social media API
-How do I explain the user registration process in a clear and concise manner
-What details should be included in the user model overview
-How can I make the setup process easy to follow for new users
-What are the best practices for documenting authentication steps
-Pro

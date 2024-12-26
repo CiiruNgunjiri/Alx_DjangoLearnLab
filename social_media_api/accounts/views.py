@@ -1,25 +1,42 @@
 from django.shortcuts import render, redirect
-from rest_framework import serializers, generics, status
-from .models import CustomUser
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from rest_framework import generics, status
 from django.views import View
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, authenticate
 from .serializers import RegisterSerializer, LoginSerializer
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.contrib.auth.decorators import login_required
 
-class RegisterView(generics.CreateAPIView):
+# API Views
+
+class RegisterAPIView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
-class LoginView(generics.GenericAPIView):
-    serializer_class = LoginSerializer
-
-    def post(self, request):
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            token_data = serializer.create(serializer.validated_data)
-            return Response(token_data, status=status.HTTP_200_OK)
+            user = serializer.save()
+            # Create token for the new user
+            token = Token.objects.create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LoginAPIView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Regular Views
 
 class RegisterView(View):
     def get(self, request):
@@ -51,23 +68,5 @@ class ProfileView(View):
     @login_required
     def get(self, request):
         return render(request, 'accounts/profile.html', {'user': request.user})
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['id', 'username', 'email', 'bio', 'profile_picture']
-
-class RegisterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def create(self, validated_data):
-        user = CustomUser(**validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
 
 
