@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import CustomUser  # Adjust this import based on your user model
+from .models import CustomUser  # Your custom user model
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 
-UserModel = get_user_model()  # Store the user model for reuse
+UserModel = get_user_model()  # Get the user model
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -14,13 +14,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = UserModel(**validated_data)
-        user.set_password(validated_data['password'])  # Hash the password
-        user.save()
-
+        # Create a new user using the create_user method
+        user = UserModel.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
         # Automatically create a token for the new user
         Token.objects.create(user=user)
-
         return user
 
 class LoginSerializer(serializers.Serializer):
@@ -37,4 +38,11 @@ class LoginSerializer(serializers.Serializer):
 
         return data
 
-# Note: The token retrieval should typically be handled in the view, not here.
+    def create(self, validated_data):
+        username = validated_data['username']
+        user = UserModel.objects.get(username=username)
+        
+        # Create or get the token for the user
+        token, created = Token.objects.get_or_create(user=user)
+        
+        return {'token': token.key}
