@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from .models import CustomUser  # Your custom user model
-from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
+from rest_framework.authtoken.models import Token
 
 UserModel = get_user_model()  # Get the user model
 
