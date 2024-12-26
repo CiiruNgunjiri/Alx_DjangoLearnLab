@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'rest_framework.authtoken',
+    'posts',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'  # Redirect here if not logged in
 LOGIN_REDIRECT_URL = 'profile'  # Redirect here after logging in
 LOGOUT_REDIRECT_URL = 'login'  # Redirect here after logging out
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': (
+       'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}
