@@ -5,6 +5,8 @@ from .serializers import PostSerializer, CommentSerializer
 from django_filters.rest_framework import FilterSet
 from accounts.models import CustomUser #to access following relationships
 from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
+from rest_framework.response import Response
 
 class FeedView(generics.ListAPIView):
     serializer_class = PostSerializer
