@@ -1,10 +1,25 @@
 from django.shortcuts import render, redirect
-from rest_framework import serializers
+from rest_framework import serializers, generics, status
 from .models import CustomUser
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.views import View
 from django.contrib.auth.decorators import login_required
+from .serializers import RegisterSerializer, LoginSerializer
+from rest_framework.response import Response
+
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
+
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            token_data = serializer.create(serializer.validated_data)
+            return Response(token_data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RegisterView(View):
     def get(self, request):
